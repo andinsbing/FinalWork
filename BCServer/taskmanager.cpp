@@ -36,6 +36,7 @@ void TaskManager::finishTask(const QJsonObject& json)
     taskStarted.removeOne(id);
 
     JsonFunction::copy(taskList[id], json, { "time", "memory", "result" });
+    taskList[id].insert("end_time", QTime::currentTime().toString());
     taskFinished.append(id);
     emit newTaskFinished(taskList[id]);
 }

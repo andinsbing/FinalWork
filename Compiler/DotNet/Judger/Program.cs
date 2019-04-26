@@ -78,6 +78,7 @@ namespace Judger
         // -c CPP|C|JAVA
         static int Main(string[] args)
         { 
+            //System.Environment.CurrentDirectory = @"F:\QtProject\FinalWork\Compiler";
             CPPJudger judger = new CPPJudger();
             JudgeResult result = null;
             try
@@ -92,23 +93,24 @@ namespace Judger
                         throw new Exception("unrecognized type");
                 }
                 Console.Write(string.Format("{0},{1},{2}", result.Type, result.Time, result.Memory));
-            } 
+            }
             catch (JudgeResultException e)
             {
                 var message = string.Format("{0},{1},{2}", e.Result.Type, e.Result.Time, e.Result.Memory);
                 var bytes = Encoding.UTF8.GetBytes(message);
                 Console.Write(Encoding.UTF8.GetString(bytes));
             }
-            catch(JudgeInnerException e)
-            {
-                var bytes = Encoding.UTF8.GetBytes(e.Message);
-                Console.Write(Encoding.UTF8.GetString(bytes)); 
-            }
-            catch (Exception e)
+            catch (JudgeInnerException e)
             {
                 var bytes = Encoding.UTF8.GetBytes(e.Message);
                 Console.Write(Encoding.UTF8.GetString(bytes));
-            } 
+            }
+            catch (Exception e)
+            {
+                File.AppendAllText("exception", $"--{System.DateTime.Now}\n--{e.StackTrace}\n--{e.Data}\n--{e.Message}--{e.GetType()}--{e}\n");
+                var bytes = Encoding.UTF8.GetBytes(e.Message);
+                Console.Write(Encoding.UTF8.GetString(bytes));
+            }
             return 0;
         }
     }

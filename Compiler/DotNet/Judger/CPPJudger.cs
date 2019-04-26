@@ -79,74 +79,98 @@ namespace Judger
             string programPath = @"Code\Cpp\a.run";
             using (Process myProcess = new Process())
             {
-                StringBuilder output = new StringBuilder();
-                myProcess.StartInfo.UseShellExecute = false;
-                myProcess.StartInfo.FileName = programPath;
-                myProcess.StartInfo.CreateNoWindow = true;
-                myProcess.StartInfo.RedirectStandardOutput = true;
-                myProcess.StartInfo.RedirectStandardInput = true;
-                myProcess.StartInfo.Arguments = string.Format("");
+StringBuilder output = new StringBuilder();
+myProcess.StartInfo.UseShellExecute = false;
+myProcess.StartInfo.FileName = programPath;
+myProcess.StartInfo.CreateNoWindow = true;
+myProcess.StartInfo.UseShellExecute = false;
+myProcess.StartInfo.RedirectStandardOutput = true;
+myProcess.StartInfo.RedirectStandardInput = true; 
 
-                myProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
-                {
-                    if (!string.IsNullOrEmpty(e.Data))
-                    {
-                        output.Append(e.Data);
-                        output.Append('\n');
-                    }
-                });
+myProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
+{
+    if (!string.IsNullOrEmpty(e.Data))
+    {
+        output.Append(e.Data);
+        output.Append('\n');
+    }
+});
 
-                double timeMax = 0;
-                double memoryMax = 0;
+double timeMax = 0;
+double memoryMax = 0;
+foreach (var sample in topic.Sample)
+{
+    output.Clear();
 
-                foreach (var sample in topic.Sample)
-                {
-                    output.Clear();
+    double time = 0;
+    double memory = 0;
+    bool tag = false;
+    myProcess.Start();
 
-                    double time = 0;
-                    double memory = 0;
-                    bool tag = false;
-                    myProcess.Start();
+    myProcess.StandardInput.Write(sample.Input);
+    myProcess.StandardInput.Close();
 
-                    myProcess.StandardInput.Write(sample.Input);
-                    myProcess.StandardInput.Close();
-                    do
-                    {
-                        time = myProcess.TotalProcessorTime.TotalMilliseconds;
-                        memory = myProcess.PrivateMemorySize64 / 1024.0 / 1024;
-                        if (time > timeLimit)
-                        {
-                            myProcess.Kill();
-                            throw new JudgeResultException(JudgeResultType.TimeLimiExceed, time, memory);
-                        }
-                        if (memory > memoryLimit)
-                        {
-                            myProcess.Kill();
-                            throw new JudgeResultException(JudgeResultType.MemoryLimitExceed, time, memory);
-                        }
+    int memorySetCount = 0;
+    do
+    {
+        if (!tag)
+        {
+            myProcess.BeginOutputReadLine();
+            tag = true;
+        }
 
-                        if (!tag)
-                        {
-                            myProcess.BeginOutputReadLine();
-                            tag = true;
-                        }
-                    } while ((!myProcess.HasExited)); 
-                    myProcess.WaitForExit();
-                    myProcess.CancelOutputRead();
-                    if (myProcess.ExitCode != 0)
-                    {
-                        throw new JudgeResultException(JudgeResultType.RuntimeError, time, memory);
-                    }
+        System.Threading.Thread.Sleep(20);
 
-                    var result = Comparison.Compare(sample.Output, output.ToString());
-                    if(result!=JudgeResultType.Accept)
-                    {
-                        throw new JudgeResultException(result, time, memory);
-                    }
+        try
+        {
+            time = myProcess.TotalProcessorTime.TotalMilliseconds; 
+        }
+        catch(InvalidOperationException)
+        {
+            // process exited exception, do nothing
+        }
+        if (memorySetCount == 0 || myProcess.HasExited)
+        {
+            memorySetCount = 5;
+            try
+            {
+                memory = myProcess.PrivateMemorySize64 / 1024.0 / 1024;
+            }
+            catch (InvalidOperationException)
+            {
+                // exception, process may ha exited, do nothing
+            }
+        }
+        memorySetCount -= 1;
+
+        if (time > timeLimit)
+        {
+            myProcess.Kill();
+            throw new JudgeResultException(JudgeResultType.TimeLimiExceed, time, memory);
+        }
+        if (memory > memoryLimit)
+        {
+            myProcess.Kill();
+            throw new JudgeResultException(JudgeResultType.MemoryLimitExceed, time, memory);
+        }
+
+    } while ((!myProcess.HasExited)); 
+    myProcess.WaitForExit();
+    myProcess.CancelOutputRead();
+    if (myProcess.ExitCode != 0)
+    {
+        throw new JudgeResultException(JudgeResultType.RuntimeError, time, memory);
+    }
+
+    var result = Comparison.Compare(sample.Output, output.ToString());
+    if(result!=JudgeResultType.Accept)
+    {
+        throw new JudgeResultException(result, time, memory);
+    }
 
 
-                    timeMax = Math.Max(timeMax, time);
-                    memoryMax = Math.Max(memoryMax, memory);
+    timeMax = Math.Max(timeMax, time);
+    memoryMax = Math.Max(memoryMax, memory);
                 }
                 return new JudgeResult(JudgeResultType.Accept, timeMax, memoryMax);
             }

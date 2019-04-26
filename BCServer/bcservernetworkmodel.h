@@ -40,7 +40,7 @@ private:
     QJsonObject               user;
     QJsonObject               topic;
     class TaskManager*        taskManager;
-    QList<qint32>             OJReadyLIst;
+    QList<qint32>             OJReadyList;
     QMap<qint32, QJsonObject> OJTask;
 };
 

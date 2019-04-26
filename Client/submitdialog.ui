@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Submit</string>
   </property>
   <widget class="QPlainTextEdit" name="codeTextEdit">
    <property name="geometry">
@@ -26,10 +26,11 @@
     <string>//input code sample
 
 #include&lt;stdio.h&gt;
-
 int main()
 {
-	printf(&quot;hello world&quot;);
+	int a,b;
+	scanf(&quot;%d%d&quot;,&amp;a,&amp;b);
+	printf(&quot;%d&quot;,a+b);
 	return 0;
 }</string>
    </property>
@@ -37,7 +38,7 @@ int main()
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>280</x>
+     <x>290</x>
      <y>250</y>
      <width>80</width>
      <height>20</height>
@@ -50,8 +51,8 @@ int main()
   <widget class="QLineEdit" name="timeText">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>220</y>
+     <x>70</x>
+     <y>10</y>
      <width>113</width>
      <height>20</height>
     </rect>
@@ -60,11 +61,11 @@ int main()
     <string>1</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="timeLabel">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>220</y>
+     <x>20</x>
+     <y>10</y>
      <width>54</width>
      <height>12</height>
     </rect>
@@ -72,6 +73,70 @@ int main()
    <property name="text">
     <string>Time</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>180</y>
+     <width>160</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="1">
+     <widget class="QComboBox" name="comboBox">
+      <item>
+       <property name="text">
+        <string>CPP</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>C</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>JAVA</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="comboBox_2">
+      <item>
+       <property name="text">
+        <string>A</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>B</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>C</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Problem：</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Language：</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

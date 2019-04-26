@@ -84,7 +84,6 @@ void TcpSocket::write(const QByteArray& data)
 {
     const auto& byteWriten = socket->write(data);
     Q_ASSERT(byteWriten != -1);
-    socket->flush();
 }
 
 void TcpSocket::write(QJsonObject json)
@@ -94,12 +93,14 @@ void TcpSocket::write(QJsonObject json)
 
 void TcpSocket::connectToHost(const QString& hostName, const quint16 port)
 {  // only allow ip4 protocol
+    socket->setSocketOption(QAbstractSocket::KeepAliveOption, 1);
     socket->connectToHost(hostName, port, QAbstractSocket::ReadWrite,
                           QAbstractSocket::IPv4Protocol);
-    connect(socket, &QTcpSocket::connected,
-            [this] { this->socket->setSocketOption(QAbstractSocket::KeepAliveOption, 1); });
     bool isConnected = socket->waitForConnected();
-    Q_ASSERT_X(isConnected, "tcp connection", "cannot connet to host");
+    if (!isConnected) {
+        qDebug() << socket->error();
+        Q_ASSERT_X(isConnected, "tcp connection", "cannot connet to host");
+    }
 }
 
 QString TcpSocket::localAddress() const

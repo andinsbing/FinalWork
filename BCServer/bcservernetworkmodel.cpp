@@ -70,11 +70,11 @@ void BCServerNetworkModel::newPushEvent(const QJsonObject& json)
         auto result = json;
         NetworkIDFunction::removeID(result);
         taskManager->finishTask(result);
-        OJReadyLIst.push_back(NetworkIDFunction::getID(json));
-        dispatchTask();
+        OJReadyList.push_back(NetworkIDFunction::getID(json));
         OJTask[NetworkIDFunction::getID(json)] = QJsonObject{};
+        dispatchTask();
     } else if (type == "ready") {
-        OJReadyLIst.push_back(NetworkIDFunction::getID(json));
+        OJReadyList.push_back(NetworkIDFunction::getID(json));
         dispatchTask();
     } else {
         Q_UNREACHABLE();
@@ -101,9 +101,10 @@ void BCServerNetworkModel::networkDisconnected(qint32 networkID)
         taskManager->addTask(task);
         OJTask[networkID] = QJsonObject{};
     }
-    if (OJReadyLIst.contains(networkID)) {
-        OJReadyLIst.removeOne(networkID);
+    if (OJReadyList.contains(networkID)) {
+        OJReadyList.removeOne(networkID);
     }
+    dispatchTask();
 }
 
 void BCServerNetworkModel::addTestSubmit()
@@ -124,7 +125,7 @@ void BCServerNetworkModel::addTestSubmit()
 
 void BCServerNetworkModel::dispatchTask()
 {
-    if (OJReadyLIst.isEmpty() || !taskManager->hasTask()) {
+    if (OJReadyList.isEmpty() || !taskManager->hasTask()) {
         return;
     }
 
@@ -133,11 +134,11 @@ void BCServerNetworkModel::dispatchTask()
     json.insert("type", "task");
     NetworkIDFunction::setID(json, -1);
 
-    while (!OJReadyLIst.isEmpty() && taskManager->hasTask()) {
+    while (!OJReadyList.isEmpty() && taskManager->hasTask()) {
         auto task = taskManager->takeTask();
         json.insert("data", task);
-        auto ID = OJReadyLIst.first();
-        NetworkIDFunction::replaceID(json, OJReadyLIst.takeFirst());
+        auto ID = OJReadyList.first();
+        NetworkIDFunction::replaceID(json, OJReadyList.takeFirst());
         emit sendJson(json);
         OJTask[ID] = task;
     }

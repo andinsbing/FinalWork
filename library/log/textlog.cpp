@@ -53,9 +53,15 @@ void defaultMessageOutput(QtMsgType type, const QMessageLogContext& context, con
         break;
     case QtCriticalMsg:
         writeMessage(QString("Type: Critical\n") + info);
+#ifndef QT_DEBUG
+        exit(1);
+#endif
         break;
     case QtFatalMsg:
         writeMessage(QString("Type: Fatal\n") + info);
+#ifndef QT_DEBUG
+        exit(1);
+#endif
         break;
     default:
         Q_UNREACHABLE();

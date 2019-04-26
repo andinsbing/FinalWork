@@ -8,6 +8,8 @@ SubmitDialog::SubmitDialog(QWidget* parent) : QDialog(parent), ui(new Ui::Submit
     ui->setupUi(this);
     defaultText = ui->codeTextEdit->toPlainText();
     connect(ui->pushButton, &QPushButton::clicked, this, &SubmitDialog::onSubmit);
+    ui->timeText->hide();
+    ui->timeLabel->hide();
 }
 
 SubmitDialog::~SubmitDialog()

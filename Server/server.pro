@@ -27,7 +27,6 @@ FORMS += \
 
 HEADERS += \
     mainwindow.h \
-    mysqlconnector.h \
     networkconfig.h \
     ../library/network/protocol.h \
     ../library/network/tcpserver.h \
@@ -52,7 +51,6 @@ HEADERS += \
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    mysqlconnector.cpp \
     networkconfig.cpp \
     ../library/network/tcpserver.cpp \
     ../library/network/tcpsocket.cpp \
