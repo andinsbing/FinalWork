@@ -8,17 +8,17 @@ using System.Text;
 namespace Judger
 {
 
-    class CPPJudger
+    class CJudger
     {
         private long timeLimit;
         private long memoryLimit;
-        private Topic topic; 
+        private Topic topic;
 
         void Compile(string compileArgument)
         {
-            var gccPath = @"MinGW\bin\g++.exe";
-            var codePath = @"Code\Cpp\a.cpp";
-            var outputPath = @"Code\Cpp\a.run";
+            var gccPath = @"MinGW\bin\gcc.exe";
+            var codePath = @"Code\C\a.c";
+            var outputPath = @"Code\C\a.run";
             if (!File.Exists(gccPath))
             {
                 throw new JudgeInnerException(string.Format("{0} not exist", gccPath));
@@ -66,7 +66,7 @@ namespace Judger
 
         public JudgeResult Run(long time, long memory, Topic myTopic)
         {
-            Compile(" -pipe -static -lm -s -x c++ -std=c++11 -O2");
+            Compile(" -pipe -static -lm -s -std=c99 -O2");
             timeLimit = time;
             memoryLimit = memory;
             topic = myTopic;
@@ -75,7 +75,7 @@ namespace Judger
 
         public JudgeResult Execute()
         {
-            string programPath = @"Code\Cpp\a.run";
+            string programPath = @"Code\C\a.run";
             using (Process myProcess = new Process())
             {
                 StringBuilder output = new StringBuilder();
@@ -151,7 +151,7 @@ namespace Judger
                         {
                             myProcess.Kill();
                             throw new JudgeResultException(JudgeResultType.MemoryLimitExceed, time, memory);
-                        } 
+                        }
                     } while ((!myProcess.HasExited));
                     myProcess.WaitForExit();
                     myProcess.CancelOutputRead();

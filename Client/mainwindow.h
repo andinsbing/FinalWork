@@ -35,6 +35,8 @@ private:
     QThread*                 thread;
     class InfoDialog*        infoDialog;
     class TaskDialog*        taskDialog;
+    class TopicDialog*       topicDialog;
+    class RankDialog*        rankDialog;
 };
 
 #endif  // MAINWINDOW_H

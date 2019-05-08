@@ -1,5 +1,6 @@
 #include "submitdialog.h"
 #include "ui_submitdialog.h"
+
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -25,16 +26,27 @@ void SubmitDialog::start()
     }
 }
 
+void SubmitDialog::updateTopic(const QJsonArray& array)
+{
+    this->ui->indexBox->clear();
+    for (int i = 1; i <= array.size(); i++) {
+        ui->indexBox->addItem(QString::number(i));
+    }
+}
+
 void SubmitDialog::onSubmit()
 {
     const auto& code = ui->codeTextEdit->toPlainText();
+
     if (!checkCode(code)) {
         QMessageBox::information(this, "error", "code cannot be empty");
     } else {
         auto time = ui->timeText->text().toInt();
         Q_ASSERT(time > 0);
         for (int i = 0; i < time; i++) {
-            emit submit(1, code, "CPP");
+            auto index = ui->indexBox->currentText().toInt();
+            Q_ASSERT(index > 0);
+            emit submit(index, code, ui->languageBox->currentText());
         }
         this->hide();
     }

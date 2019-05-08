@@ -40,8 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CJudger.cs" />
     <Compile Include="Comparison.cs" />
     <Compile Include="CPPJudger.cs" />
+    <Compile Include="JAVAJudger.cs" />
     <Compile Include="JudgeResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

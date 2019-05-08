@@ -41,6 +41,7 @@ SOURCES += \
     clientnetworkcontroller.cpp \
     ../library/data_structure/ojdatastructure.cpp\
     logindialog.cpp \
+    rankdialog.cpp \
     submitdialog.cpp \
     ../library/network/networkcontroller.cpp \
     ../library/network/networkreceiver.cpp \
@@ -49,7 +50,8 @@ SOURCES += \
     infodialog.cpp \
     clientmodel.cpp \
     ../library/json/jsonfunction.cpp \
-    taskdialog.cpp
+    taskdialog.cpp \
+    topicdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -69,6 +71,7 @@ HEADERS += \
     clientnetworkcontroller.h \
     ../library/data_structure/ojdatastructure.h\
     logindialog.h \
+    rankdialog.h \
     submitdialog.h \
     ../library/network/networkcontroller.h \
     ../library/network/networkreceiver.h \
@@ -77,14 +80,17 @@ HEADERS += \
     infodialog.h \
     clientmodel.h \
     ../library/json/jsonfunction.h \
-    taskdialog.h
+    taskdialog.h \
+    topicdialog.h
 
 FORMS += \
         mainwindow.ui \
     logindialog.ui \
+    rankdialog.ui \
     submitdialog.ui \
     infodialog.ui \
-    taskdialog.ui
+    taskdialog.ui \
+    topicdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -92,3 +98,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES +=
+

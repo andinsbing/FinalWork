@@ -6,8 +6,10 @@
 #include "clientviewcontroller.h"
 #include "infodialog.h"
 #include "logindialog.h"
+#include "rankdialog.h"
 #include "submitdialog.h"
 #include "taskdialog.h"
+#include "topicdialog.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
@@ -19,7 +21,8 @@ MainWindow::MainWindow(QWidget* parent)
       networkController(new ClientNetworkController(this)),
       viewController(new ClientViewController(this)), model(new ClientModel(this)),
       loginDialog(new LoginDialog(this)), submitDialog(new SubmitDialog(this)),
-      thread(new QThread(this)), infoDialog(new InfoDialog(this)), taskDialog(new TaskDialog(this))
+      thread(new QThread(this)), infoDialog(new InfoDialog(this)), taskDialog(new TaskDialog(this)),
+      topicDialog(new TopicDialog(this)), rankDialog(new RankDialog(this))
 {
     ui->setupUi(this);
     network->start();
@@ -47,6 +50,8 @@ MainWindow::MainWindow(QWidget* parent)
         }
     });
     connect(loginDialog, &LoginDialog::finished, [] { qApp->quit(); });
+    connect(model, &ClientModel::updateName,
+            [this](const QString& name) { this->ui->nameLabel->setText(name); });
 
     // submit
     connect(model, &ClientModel::submitResult, [this](bool ok) {
@@ -58,6 +63,7 @@ MainWindow::MainWindow(QWidget* parent)
     });
     connect(submitDialog, &SubmitDialog::submit, viewController, &ClientViewController::submit);
     connect(ui->submitPushButton, &QPushButton::clicked, submitDialog, &SubmitDialog::start);
+    connect(model, &ClientModel::updateTopicArray, this->submitDialog, &SubmitDialog::updateTopic);
 
     // info
     connect(infoDialog, &InfoDialog::info, viewController, &ClientViewController::info);
@@ -66,6 +72,15 @@ MainWindow::MainWindow(QWidget* parent)
     // task info
     connect(model, &ClientModel::taskFinished, taskDialog, &TaskDialog::addTask);
     connect(ui->taskPushButton, &QPushButton::clicked, this->taskDialog, &TaskDialog::show);
+
+    // topic
+    connect(ui->topicPushButton, &QPushButton::clicked, topicDialog, &TopicDialog::show);
+    connect(model, &ClientModel::updateTopicArray, topicDialog, &TopicDialog::updateTopic);
+
+    // rank
+    connect(ui->rankPushButton, &QPushButton::clicked, rankDialog, &RankDialog::show);
+    connect(model, &ClientModel::updateTopicArray, rankDialog, &RankDialog::updateTopic);
+    connect(model, &ClientModel::taskFinished, rankDialog, &RankDialog::addTask);
 
     //    model->start();
     QTimer::singleShot(10, model, &ClientModel::start);

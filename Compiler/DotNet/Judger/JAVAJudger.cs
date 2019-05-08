@@ -6,22 +6,19 @@ using System.Linq;
 using System.Text;
 
 namespace Judger
-{
-
-    class CPPJudger
+{ 
+    class JAVAJudger
     {
         private long timeLimit;
         private long memoryLimit;
-        private Topic topic; 
+        private Topic topic;
 
-        void Compile(string compileArgument)
-        {
-            var gccPath = @"MinGW\bin\g++.exe";
-            var codePath = @"Code\Cpp\a.cpp";
-            var outputPath = @"Code\Cpp\a.run";
-            if (!File.Exists(gccPath))
+        private void Compile()
+        { 
+            var codePath = @"Code\JAVA\A.java"; 
+            if (!File.Exists(codePath))
             {
-                throw new JudgeInnerException(string.Format("{0} not exist", gccPath));
+                throw new JudgeInnerException(string.Format("{0} not exist", codePath));
             }
             bool needRestart = true;
             while (needRestart)
@@ -30,11 +27,11 @@ namespace Judger
                 using (Process myProcess = new Process())
                 {
                     myProcess.StartInfo.UseShellExecute = false;
-                    myProcess.StartInfo.FileName = gccPath;
+                    myProcess.StartInfo.FileName = "javac";
                     myProcess.StartInfo.CreateNoWindow = true;
                     myProcess.StartInfo.RedirectStandardError = true;
-                    myProcess.StartInfo.Arguments = string.Format("{0} {1} -o {2} ", codePath, compileArgument, outputPath);
-                    myProcess.Start();
+                    myProcess.StartInfo.Arguments = codePath;
+                    myProcess.Start(); 
                     if (!myProcess.WaitForExit(10 * 1000))
                     {
                         myProcess.Kill();
@@ -47,14 +44,7 @@ namespace Judger
                         System.IO.StreamWriter file = new StreamWriter(@"Code\CompilerErrorLog", true);
                         file.WriteLine(errorInfo);
                         file.Close();
-                        if (errorInfo.Contains("ld.exe: cannot open output file"))
-                        {// file not ready, restart, gcc bug
-                            needRestart = true;
-                        }
-                        else
-                        {
-                            throw new JudgeResultException(JudgeResultType.CompileError, 0, 0);
-                        }
+                        throw new JudgeResultException(JudgeResultType.CompileError, 0, 0);
                     }
                     else if (myProcess.ExitCode != 0)
                     {
@@ -66,7 +56,7 @@ namespace Judger
 
         public JudgeResult Run(long time, long memory, Topic myTopic)
         {
-            Compile(" -pipe -static -lm -s -x c++ -std=c++11 -O2");
+            Compile();
             timeLimit = time;
             memoryLimit = memory;
             topic = myTopic;
@@ -74,17 +64,20 @@ namespace Judger
         }
 
         public JudgeResult Execute()
-        {
-            string programPath = @"Code\Cpp\a.run";
+        { 
             using (Process myProcess = new Process())
             {
                 StringBuilder output = new StringBuilder();
                 myProcess.StartInfo.UseShellExecute = false;
-                myProcess.StartInfo.FileName = programPath;
+                myProcess.StartInfo.FileName = "java";
+                myProcess.StartInfo.Arguments = "A";
                 myProcess.StartInfo.CreateNoWindow = true;
                 myProcess.StartInfo.UseShellExecute = false;
                 myProcess.StartInfo.RedirectStandardOutput = true;
                 myProcess.StartInfo.RedirectStandardInput = true;
+                myProcess.StartInfo.RedirectStandardError = true;
+                myProcess.StartInfo.ErrorDialog = false;
+                myProcess.StartInfo.WorkingDirectory = @"Code\JAVA";
 
                 myProcess.OutputDataReceived += new DataReceivedEventHandler((s, e) =>
                 {
@@ -106,9 +99,10 @@ namespace Judger
                     bool tag = false;
                     myProcess.Start();
 
+                    memory = myProcess.PrivateMemorySize64 / 1024.0 / 1024;
                     myProcess.StandardInput.Write(sample.Input);
                     myProcess.StandardInput.Close();
-
+                    
                     int memorySetCount = 0;
                     do
                     {
@@ -130,10 +124,10 @@ namespace Judger
                         }
                         if (memorySetCount == 0 || myProcess.HasExited)
                         {
-                            memorySetCount = 5;
+                            memorySetCount = 2;
                             try
                             {
-                                memory = myProcess.PrivateMemorySize64 / 1024.0 / 1024;
+                                memory = myProcess.PrivateMemorySize64 / 1024.0 / 1024; 
                             }
                             catch (InvalidOperationException)
                             {
@@ -144,19 +138,20 @@ namespace Judger
 
                         if (time > timeLimit)
                         {
-                            myProcess.Kill();
+                            try { myProcess.Kill(); } catch (Exception) { } 
                             throw new JudgeResultException(JudgeResultType.TimeLimiExceed, time, memory);
                         }
                         if (memory > memoryLimit)
                         {
-                            myProcess.Kill();
+                            try { myProcess.Kill(); } catch (Exception) { }
                             throw new JudgeResultException(JudgeResultType.MemoryLimitExceed, time, memory);
-                        } 
+                        }
                     } while ((!myProcess.HasExited));
                     myProcess.WaitForExit();
                     myProcess.CancelOutputRead();
                     if (myProcess.ExitCode != 0)
                     {
+                        var error = myProcess.StandardError.ReadToEnd();
                         throw new JudgeResultException(JudgeResultType.RuntimeError, time, memory);
                     }
 

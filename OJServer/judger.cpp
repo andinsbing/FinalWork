@@ -21,10 +21,13 @@ QJsonObject Judger::judge(const QJsonObject& task)
     QString language = task["language"].toString();
     if (language == "CPP") {
         codePath = compilePath + R"(\Code\Cpp\a.cpp)";
+    } else if (language == "JAVA") {
+        codePath = compilePath + R"(\Code\JAVA\A.java)";
+    } else if (language == "C") {
+        codePath = compilePath + R"(\Code\C\a.c)";
     } else {
         Q_UNREACHABLE();
     }
-
     FileSystem().makeFile(codePath, task["code"].toString().toUtf8());
 
     QStringList argument;
@@ -46,7 +49,9 @@ QJsonObject Judger::judge(const QJsonObject& task)
         process->kill();  // windows bug, ensure the process exit in time
         auto&& ouput      = QString::fromLocal8Bit(process->readAllStandardOutput());
         auto&& outputList = ouput.split(',');
-        Q_ASSERT_X(outputList.size() == 3, "judger_output", ouput.toStdString().c_str());
+        if (outputList.size() != 3) {
+            Q_ASSERT_X(false, "judger_output", ouput.toStdString().c_str());
+        }
         result.insert("result", outputList[0]);
         result.insert("time", outputList[1]);
         result.insert("memory", outputList[2]);

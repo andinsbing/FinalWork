@@ -17,8 +17,8 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>10</y>
+      <x>10</x>
+      <y>40</y>
       <width>511</width>
       <height>261</height>
      </rect>
@@ -28,6 +28,16 @@
       <widget class="QPushButton" name="infoPushButton">
        <property name="text">
         <string>info</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="taskPushButton">
+       <property name="text">
+        <string>task</string>
        </property>
        <property name="checkable">
         <bool>false</bool>
@@ -44,23 +54,6 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QPushButton" name="topicPushButton">
-       <property name="text">
-        <string>topic</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QPushButton" name="taskPushButton">
-       <property name="text">
-        <string>task</string>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="0">
       <widget class="QPushButton" name="rankPushButton">
        <property name="text">
@@ -68,7 +61,40 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="topicPushButton">
+       <property name="text">
+        <string>topic</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="UserLabel">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>User：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="nameLabel">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>10</y>
+      <width>54</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>name</string>
+    </property>
    </widget>
   </widget>
  </widget>

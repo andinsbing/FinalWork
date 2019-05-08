@@ -13,6 +13,8 @@ namespace Judger
     enum JudgetType
     {
         CPP,
+        JAVA,
+        C
     } 
      
     class Program
@@ -58,6 +60,14 @@ namespace Judger
                                 type = JudgetType.CPP;
                                 typeTag = true;
                                 break;
+                            case "JAVA":
+                                type = JudgetType.JAVA;
+                                typeTag = true;
+                                break;
+                            case "C":
+                                type = JudgetType.C;
+                                typeTag = true;
+                                break;
                             default:
                                 throw new JudgeInnerException($"unrecognized type:{arg[i + 1]}");
                         }
@@ -77,9 +87,8 @@ namespace Judger
         // -m memory limit(ms)
         // -c CPP|C|JAVA
         static int Main(string[] args)
-        { 
+        {
             //System.Environment.CurrentDirectory = @"F:\QtProject\FinalWork\Compiler";
-            CPPJudger judger = new CPPJudger();
             JudgeResult result = null;
             try
             {
@@ -87,8 +96,23 @@ namespace Judger
                 switch (type)
                 {
                     case JudgetType.CPP:
-                        result = judger.Run(timeLimit, memoryLimit, topic);
-                        break;
+                        {
+                            CPPJudger judger = new CPPJudger();
+                            result = judger.Run(timeLimit, memoryLimit, topic);
+                            break;
+                        }
+                    case JudgetType.JAVA:
+                        {
+                            JAVAJudger judger = new JAVAJudger();
+                            result = judger.Run(timeLimit, memoryLimit, topic);
+                            break;
+                        }
+                    case JudgetType.C:
+                        {
+                            CJudger judger = new CJudger();
+                            result  = judger.Run(timeLimit, memoryLimit, topic);
+                            break;
+                        }
                     default:
                         throw new Exception("unrecognized type");
                 }
@@ -111,7 +135,8 @@ namespace Judger
                 var bytes = Encoding.UTF8.GetBytes(e.Message);
                 Console.Write(Encoding.UTF8.GetString(bytes));
             }
+            Console.ReadKey();
             return 0;
-        }
+            }
     }
 }

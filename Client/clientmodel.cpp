@@ -22,7 +22,10 @@ void ClientModel::login(const QString& name, const QString& password)
     json.insert("type", "login");
     json.insert("name", name);
     json.insert("password", password);
+    this->name     = name;
+    this->passwrod = password;
     emit sendJson(json);
+    emit updateName(name);
 }
 
 void ClientModel::submit(int index, const QString& code, const QString& language)
@@ -106,5 +109,8 @@ void ClientModel::updateRank(const QJsonObject& json) {}
 void ClientModel::updateTopic(const QJsonObject& json)
 {
     Q_ASSERT(json.contains("data"));
-    this->topic = json["data"].toObject();
+    this->topic        = json["data"].toObject();
+    const auto&& array = topic["array"].toArray();
+    Q_ASSERT(!array.isEmpty());
+    emit updateTopicArray(array);
 }

@@ -2,6 +2,7 @@
 #define SUBMITDIALOG_H
 
 #include <QDialog>
+#include <QJsonArray>
 
 namespace Ui
 {
@@ -21,6 +22,10 @@ signals:
 
 public:
     void start();
+
+public slots:
+    void updateTopic(const QJsonArray& array);
+
 private slots:
     void onSubmit();
 

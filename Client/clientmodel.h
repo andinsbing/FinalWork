@@ -21,6 +21,8 @@ signals:
     void loginResult(bool ok, const QString& hint = "");
     void submitResult(bool ok);
     void taskFinished(const QJsonObject& json);
+    void updateName(const QString& name);
+    void updateTopicArray(const QJsonArray& array);
 
 public:
     void start() override;
