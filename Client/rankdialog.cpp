@@ -20,7 +20,7 @@ void RankDialog::updateTopic(const QJsonArray& array)
         list << QString("Topic ") + QString::number(i);
     }
     topicCount = array.size();
-    list << "Totoal Time";
+    list << "Total Time";
     list << "AC Count";
     ui->tableWidget->setColumnCount(list.size());
     ui->tableWidget->setHorizontalHeaderLabels(list);
@@ -49,8 +49,9 @@ void RankDialog::addTask(const QJsonObject& json)
         if (isAC) {
             data.totalTime += time;
             data.ACCount += 1;
+            data.totalTime += data.ErrorCount[index] * 20 * 60 * 1000;  // add 20 minutes per error
         } else {
-            data.totalTime += 20 * 60 * 1000;  // add 20 minutes
+            data.ErrorCount[index] += 1;
         }
         rankSet.insert(data);
     } else {
@@ -61,8 +62,9 @@ void RankDialog::addTask(const QJsonObject& json)
             data.totalTime += time;
             data.ACCount += 1;
             data.isAC[index] = true;
+            data.totalTime += data.ErrorCount[index] * 20 * 60 * 1000;  // add 20 minutes per error
         } else if (!isAC) {
-            data.totalTime += 20 * 60 * 1000;  // add 20 minutes
+            data.ErrorCount[index] += 1;
         }
         rankSet.insert(data);
     }

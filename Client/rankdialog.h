@@ -15,11 +15,13 @@ struct RankData
         for (int i = 0; i <= topicSize; i++) {
             submitCount.append(0);
             isAC.append(false);
+            ErrorCount.append(0);
         }
     }
     qint32        id;
     QString       name;
     QList<qint32> submitCount;
+    QList<qint32> ErrorCount;
     QList<bool>   isAC;
     qint32        totalTime = 0;
     qint32        ACCount   = 0;

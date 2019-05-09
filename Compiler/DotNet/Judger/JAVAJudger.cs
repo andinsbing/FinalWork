@@ -110,9 +110,7 @@ namespace Judger
                         {
                             myProcess.BeginOutputReadLine();
                             tag = true;
-                        }
-
-                        System.Threading.Thread.Sleep(20);
+                        } 
 
                         try
                         {
@@ -146,6 +144,9 @@ namespace Judger
                             try { myProcess.Kill(); } catch (Exception) { }
                             throw new JudgeResultException(JudgeResultType.MemoryLimitExceed, time, memory);
                         }
+
+                        System.Threading.Thread.Sleep(20);
+
                     } while ((!myProcess.HasExited));
                     myProcess.WaitForExit();
                     myProcess.CancelOutputRead();

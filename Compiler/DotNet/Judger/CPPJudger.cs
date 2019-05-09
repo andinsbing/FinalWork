@@ -118,8 +118,6 @@ namespace Judger
                             tag = true;
                         }
 
-                        System.Threading.Thread.Sleep(20);
-
                         try
                         {
                             time = myProcess.TotalProcessorTime.TotalMilliseconds;
@@ -151,8 +149,12 @@ namespace Judger
                         {
                             myProcess.Kill();
                             throw new JudgeResultException(JudgeResultType.MemoryLimitExceed, time, memory);
-                        } 
+                        }
+
+                        System.Threading.Thread.Sleep(20);
+
                     } while ((!myProcess.HasExited));
+
                     myProcess.WaitForExit();
                     myProcess.CancelOutputRead();
                     if (myProcess.ExitCode != 0)
