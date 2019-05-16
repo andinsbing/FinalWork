@@ -8,11 +8,9 @@ class Judger : public QObject
 {
     Q_OBJECT
 public:
-public:
     explicit Judger(QObject* parent = nullptr);
     QJsonObject judge(const QJsonObject& task);
 
-private:
 private:
     class QProcess* process;
     QString         programPath;

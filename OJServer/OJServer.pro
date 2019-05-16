@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS OJ_SERVER
 CONFIG += c++11
 
 SOURCES += \
+    dockerjudger.cpp \
         main.cpp \
         mainwindow.cpp \
     ../library/data_structure/ojdatastructure.cpp \
@@ -50,6 +51,7 @@ SOURCES += \
     ../library/file/dataaccess.cpp
 
 HEADERS += \
+    dockerjudger.h \
         mainwindow.h \
     ../library/data_structure/doublemap.h \
     ../library/data_structure/ojdatastructure.h \

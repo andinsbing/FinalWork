@@ -53,4 +53,5 @@ Compiler/**/bin
 Compiler/**/obj
 Compiler/DotNet
 !Compiler/DotNet
+!Compiler/Linux
 CodeSample

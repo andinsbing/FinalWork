@@ -20,7 +20,7 @@ void RankDialog::updateTopic(const QJsonArray& array)
         list << QString("Topic ") + QString::number(i);
     }
     topicCount = array.size();
-    list << "Total Time";
+    list << "Total Time (ms)";
     list << "AC Count";
     ui->tableWidget->setColumnCount(list.size());
     ui->tableWidget->setHorizontalHeaderLabels(list);

@@ -3,12 +3,15 @@
 #include "../library/global_config/globalconfig.h"
 #include "../library/json/jsonfunction.h"
 #include "../library/network/networkidfunction.h"
+#include "dockerjudger.h"
 #include "judger.h"
 #include <QTimer>
 
 OJServerNetworkModel::OJServerNetworkModel(QObject* parent)
-    : NetworkModel(parent), judger(new Judger(this)), timer(new QTimer(this))
+    : NetworkModel(parent), judger(new Judger(this)), timer(new QTimer(this)),
+      dockerJudger(new DockerJudger(this))
 {
+    connect(this, &OJServerNetworkModel::updateTopic, dockerJudger, &DockerJudger::updateTopic);
 }
 
 void OJServerNetworkModel::newPushEvent(const QJsonObject& json)
@@ -24,6 +27,7 @@ void OJServerNetworkModel::newPushEvent(const QJsonObject& json)
         }
     } else if (type == "topic") {
         this->topic = json["data"].toObject();
+        emit updateTopic(topic);
         DataAccess().exportTopicTest(topic["array"].toArray(),
                                      Global::config["compiler_path"].toString() + R"(\Test)");
 
@@ -48,7 +52,8 @@ void OJServerNetworkModel::onTaskReady(const QJsonObject& task)
     QJsonObject json;
     json.insert("action", "push");
     json.insert("type", "task_result");
-    auto result = judger->judge(task);
+    //    auto result = judger->judge(task);
+    auto result = dockerJudger->judge(task);
     JsonFunction::copy(json, result, { "time", "memory", "result", "task_id" });
     emit sendJsonToBCServer(json);
 }

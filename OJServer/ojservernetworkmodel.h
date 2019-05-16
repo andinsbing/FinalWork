@@ -11,6 +11,7 @@ public:
 
 signals:
     void sendJsonToBCServer(const QJsonObject& json);
+    void updateTopic(const QJsonObject& json);
 
 public:
     void newPushEvent(const QJsonObject& json);
@@ -22,9 +23,10 @@ private:
     void onTaskReady(const QJsonObject& task);
 
 private:
-    class Judger* judger;
-    class QTimer* timer;
-    QJsonObject   topic;
+    class Judger*       judger;
+    class QTimer*       timer;
+    QJsonObject         topic;
+    class DockerJudger* dockerJudger;
 };
 
 #endif  // OJSERVERNETWORKMODEL_H

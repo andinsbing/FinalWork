@@ -88,7 +88,7 @@ namespace Judger
         // -c CPP|C|JAVA
         static int Main(string[] args)
         {
-            //System.Environment.CurrentDirectory = @"F:\QtProject\FinalWork\Compiler";
+            System.Environment.CurrentDirectory = @"F:\QtProject\FinalWork\Compiler";
             JudgeResult result = null;
             try
             {
